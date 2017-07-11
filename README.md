@@ -1,6 +1,6 @@
 # errors
 
-Build upon [pkg/errors](https://github.com/pkg/errors), with some customization for my customized [yyscamper/logrus](https?//github.com/yyscamper/logrus)
+Build upon [pkg/errors](https://github.com/pkg/errors), with some customization for my customized [yyscamper/logrus](https://github.com/yyscamper/logrus)
 
 ## Usage
 ```go
@@ -56,7 +56,7 @@ err = errgen.Errorf("some error with path=%s", "/home/me/foo.txt")
 ```
 
 ## Logrus Integration
-I have a customized [yyscamper/logrus](http://github.com/yyscamper/logrus), it extends the support for this error wrapper, so that the error stacktrace and all fields information can be automatically logged by logrus
+I have a customized [yyscamper/logrus](https://github.com/yyscamper/logrus), it extends the support for this error wrapper, so that the error stacktrace and all fields information can be automatically logged by logrus
 ```go
 import (
     log "github.com/yyscamper/logrus"
