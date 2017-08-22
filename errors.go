@@ -43,7 +43,12 @@ func Errorf(format string, args ...interface{}) *Error {
 
 //Wrap converts the golang standard error into Error and with stack trace is recorded
 func Wrap(err error) *Error {
-	return genError(err, 0)
+	switch err.(type) {
+	case *Error:
+		return err.(*Error)
+	default:
+		return genError(err, 0)
+	}
 }
 
 func (e *Error) Error() string {
@@ -73,24 +78,35 @@ func (e *Error) Format(s fmt.State, verb rune) {
 	}
 }
 
-//WithFields attaches some key-value pairs additional information into the Error instance
-func (e *Error) WithFields(fields Fields) *Error {
-	cap := len(fields)
-	if e.Fields == nil {
-		cap += len(e.Fields)
+func mergeFields(forigin, fnew Fields) Fields {
+	cap := 0
+	if forigin != nil {
+		cap += len(forigin)
 	}
-	newFields := make(map[string]interface{}, cap)
-	for k, v := range e.Fields {
-		newFields[k] = v
-	}
-	for k, v := range fields {
-		newFields[k] = v
+	if fnew != nil {
+		cap += len(fnew)
 	}
 
+	result := make(map[string]interface{}, cap)
+	if forigin != nil {
+		for k, v := range forigin {
+			result[k] = v
+		}
+	}
+	if fnew != nil {
+		for k, v := range fnew {
+			result[k] = v
+		}
+	}
+	return result
+}
+
+//WithFields attaches some key-value pairs additional information into the Error instance
+func (e *Error) WithFields(fields Fields) *Error {
 	return &Error{
 		err:    e.err,
 		stack:  e.stack,
-		Fields: newFields,
+		Fields: mergeFields(e.Fields, fields),
 		Name:   e.Name,
 	}
 }
